@@ -12,8 +12,8 @@ const HomePage = () => {
       <div className="flex flex-wrap justify-center my-6">
         {
           products.map((product) => (
-            <div className="p-2">
-              <Product key={product._id} product={product}/>
+            <div key={product._id} className="p-4">
+              <Product product={product}/>
             </div>
           ))
         }
