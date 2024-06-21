@@ -5,7 +5,7 @@ const HomePage = () => {
   return (
     <div>
       <div className="justify-center">
-        <h1 className="flex justify-center text-gray-500 py-4 font-bold text-5xl">
+        <h1 className="flex justify-center text-gray-300 py-4 font-bold text-5xl">
           Latest Products
         </h1>
       </div>
