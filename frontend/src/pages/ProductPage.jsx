@@ -1,11 +1,35 @@
+import axios from 'axios';
 import { Link, useParams } from 'react-router-dom'
-import products from '../products';
+import { useCallback, useEffect, useState } from 'react';
+
 import Rating from '../components/Rating';
 
 const ProductPage = () => {
   const { id: productID } = useParams();
-  const product = products.find((p) => p._id === productID);
-  console.log(product)
+  const [product, setProduct] = useState(null)
+  const [loading, setLoading] = useState(true)
+
+  const getProductAPI = useCallback(async () => {
+    setLoading(true)
+    
+    try {
+      const productRes = await axios.get(`/api/products/${productID}`)
+      setProduct(productRes.data)
+      
+    } catch (error) {
+      console.error(error.message)
+    } finally{
+      setLoading(false)
+    }
+  },[])
+
+  useEffect(()=> {
+    getProductAPI()
+  },[getProductAPI])
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     // <div className='flex flex-col text-gray-700'>

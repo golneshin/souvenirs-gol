@@ -1,7 +1,25 @@
-import products from "../products"
+import { useCallback, useEffect, useState } from "react"
+import axios from 'axios'
+
 import Product from "../components/Product"
 
 const HomePage = () => {
+  const [products, setProducts] = useState([])
+
+  const getProductsAPI =useCallback(async () => {
+    try {
+      const {data} = await axios.get('/api/products')
+      setProducts(data)
+      
+    } catch (error) {
+      console.error(error)
+    }
+  },[])
+
+  useEffect(() => {
+    getProductsAPI()
+  }, [getProductsAPI])
+  
   return (
     <div>
       <div className="justify-center">
