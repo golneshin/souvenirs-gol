@@ -4,10 +4,10 @@ import { updateCart } from "../utils/cartUtils";
 const initialState = 
   localStorage.getItem("cart")
   ? JSON.parse(localStorage.getItem("cart"))
-  : {cartItems: []}
+  : { cartItems: [], shippingAddress: {}, paymentMethod: '' }
 
 // In this slice we want to manage the state of items in the Cart.
-const cartSlice = createSlice({
+const cartSlice = createSlice({ 
   name: 'cart',
   initialState,
   reducers: {
@@ -46,11 +46,33 @@ const cartSlice = createSlice({
     removeFromCart: (state, action) => {
       state.cartItems = state.cartItems.filter(x => x._id !== action.payload);
       return updateCart(state)
-    }
-    
-  }
-})
+    },
 
-export const { addTOCart, incrementQty, decrementQty, removeFromCart } = cartSlice.actions
+    saveShippingAddress: (state, action) => {
+      state.shippingAddress = action.payload
+      localStorage.setItem('cart', JSON.stringify(state));
+    },
+
+    savePaymentMethod: (state, action) => {
+      state.paymentMethod = action.payload
+      localStorage.setItem('cart', JSON.stringify(state));
+    },
+
+    clearCartItems: (state, action) => {
+      state.cartItems = []
+      localStorage.setItem('cart', JSON.stringify(state));
+    },
+  }
+});
+
+export const { 
+  addTOCart, 
+  incrementQty, 
+  decrementQty, 
+  removeFromCart,
+  saveShippingAddress, 
+  savePaymentMethod,
+  clearCartItems,
+} = cartSlice.actions
 // for store.js file
 export default cartSlice.reducer

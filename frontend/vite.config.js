@@ -7,9 +7,15 @@ export default defineConfig({
   server: {
     port: 7545,
     proxy: {
-      "/api":{
-        target: "http://localhost:5000"
-      }
-    }
+      '/api': {
+        target: 'http://localhost:5000',
+        changeOrigin: true,
+        secure: false,
+        ws: true,
+      },
+    },
+  },
+  build: {
+    outDir: 'build', // Change 'dist' to 'build'
   }
 })

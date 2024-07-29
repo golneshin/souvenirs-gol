@@ -1,5 +1,4 @@
-
-const Message = ({ variant, children }) => {
+const Message = ({ variant = 'info', children }) => {
   const getAlertClass = (variant) => {
     switch (variant) {
       case 'primary':
@@ -28,10 +27,6 @@ const Message = ({ variant, children }) => {
       {children}
     </div>
   );
-};
-
-Message.defaultProps = {
-  variant: 'info',
 };
 
 export default Message;

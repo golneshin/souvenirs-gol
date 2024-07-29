@@ -4,11 +4,11 @@ import User from "../models/userModel.js";
 
 // protect routes
 export const protect = asyncHandler(async (req, res, next) => {
-  let token
-
+  let token  
   // extracting the token
-  // Read the JWT token from cookie
   token = req.cookies.jwt
+  // Log the token to verify if it's accessible(debugging)
+  // console.log('JWT PROTECT Token:', token);
 
   // verifying the token
   if(token) {

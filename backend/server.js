@@ -1,38 +1,82 @@
-import express from 'express'
-import dotenv from 'dotenv'
-import cors from 'cors'
-import cookieParser from 'cookie-parser'
+import path from "path";
+import cors from "cors";
+import dotenv from "dotenv";
+import express from "express";
+import cookieParser from "cookie-parser";
+
 // .env
-dotenv.config()
+dotenv.config();
+console.log("NODE_ENV:", process.env.NODE_ENV);
+
 // internal imports
-import connectDB from './config/db.js'
-import { notFound, errorHandler } from './middleware/errorMiddleware.js'
-import productsRouter from './routes/productsRoute.js'
-import usersRouter from './routes/userRoute.js'
+import { notFound, errorHandler } from "./middleware/errorMiddleware.js";
+import productsRouter from "./routes/productsRoute.js";
+import uploadRoutes from "./routes/uploadRoutes.js";
+import ordersRouter from "./routes/orderRoutes.js";
+import usersRouter from "./routes/userRoute.js";
+import connectDB from "./config/db.js";
 
-const app = express()
-app.use(cors())
+const app = express();
 
-// body parser middleware
-app.use(express.json())
-app.use(express.urlencoded({ extended: true }))
+// Cookie parser middleware
+app.use(cookieParser());
 
-// cookie parser middleware
-app.use(cookieParser())
+// CORS configuration
+const corsOptions = {
+  credentials: true, // Allow credentials (cookies)
+  origin: "http://localhost:7545",
+  optionsSuccessStatus: 200,
+};
+app.use(cors(corsOptions));
 
-app.get('/', (req, res) => {
-  res.send('Hello')
-})
+// Body parser middleware
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-app.use('/api/products', productsRouter)
-app.use('/api/users', usersRouter)
+// Debugging middleware to log requests
+app.use((req, res, next) => {
+  console.log(`Incoming request to ${req.url}`);
+  next();
+});
 
-app.use(notFound)
-app.use(errorHandler)
+// API routes
+app.use("/api/products", productsRouter);
+app.use("/api/orders", ordersRouter);
+app.use("/api/users", usersRouter);
+app.use("/api/upload", uploadRoutes);
+
+app.get("/api/config/paypal", (req, res) => {
+  res.send({
+    clientId: process.env.PAYPAL_CLIENT_ID,
+  });
+});
+
+// Base route for development
+if (process.env.NODE_ENV === 'production') {
+  const __dirname = path.resolve();
+  app.use('/uploads', express.static('/var/data/uploads'));
+  app.use(express.static(path.join(__dirname, '/frontend/build')));
+
+  app.get('*', (req, res) => {
+    res.sendFile(path.resolve(__dirname, 'frontend', 'build', 'index.html'));
+  });
+} else {
+  const __dirname = path.resolve();
+  app.use(express.static(path.join(__dirname, "/frontend/uploads")));
+  app.get('/', (req, res) => {
+    console.log("Base route hit");
+    res.send('API is running....');
+  });
+}
+
+// Error handling middleware
+app.use(notFound);
+app.use(errorHandler);
 
 // Start the server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(`Server is listening on port: ${PORT}`)
-  connectDB()
-})
+  console.log(`Server is listening on port: ${PORT}`);
+  connectDB();
+  console.log("This log confirms the server has started.");
+});
