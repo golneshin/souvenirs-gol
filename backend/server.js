@@ -17,17 +17,13 @@ import usersRouter from "./routes/userRoute.js";
 import connectDB from "./config/db.js";
 
 const app = express();
+const __dirname = path.resolve();
 
 // Cookie parser middleware
 app.use(cookieParser());
 
 // CORS configuration
-const corsOptions = {
-  credentials: true, // Allow credentials (cookies)
-  origin: "http://localhost:7545",
-  optionsSuccessStatus: 200,
-};
-app.use(cors(corsOptions));
+app.use(cors());
 
 // Body parser middleware
 app.use(express.json());
@@ -51,20 +47,15 @@ app.get("/api/config/paypal", (req, res) => {
   });
 });
 
-// Base route for development
 if (process.env.NODE_ENV === 'production') {
-  const __dirname = path.resolve();
-  app.use('/uploads', express.static('/var/data/uploads'));
-  app.use(express.static(path.join(__dirname, '/frontend/build')));
+	app.use(express.static(path.join(__dirname, "/frontend/dist")));
 
   app.get('*', (req, res) => {
-    res.sendFile(path.resolve(__dirname, 'frontend', 'build', 'index.html'));
+		res.sendFile(path.resolve(__dirname, "frontend", "dist", "index.html"));
   });
 } else {
-  const __dirname = path.resolve();
   app.use(express.static(path.join(__dirname, "/frontend/uploads")));
   app.get('/', (req, res) => {
-    console.log("Base route hit");
     res.send('API is running....');
   });
 }
@@ -78,5 +69,4 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server is listening on port: ${PORT}`);
   connectDB();
-  console.log("This log confirms the server has started.");
 });

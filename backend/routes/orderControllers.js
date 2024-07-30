@@ -71,7 +71,7 @@ export const addOrderItems = asyncHandler(async (req, res) => {
 // @access  Private
 export const getMyOrders = asyncHandler(async (req, res) => {
   const orders = await Order.find({ user: req.user._id })
-  res.status(200).json(orders)
+  res.json(orders);
 });
 
 // @desc    Get order by ID
@@ -81,11 +81,11 @@ export const getOrderById = asyncHandler(async (req, res) => {
   const order = await Order.findById(req.params.id).populate(
     'user', 'name email'
   )
-  if(order) {
-    res.status(200).json(order)
-  }else{
-    res.status(404)
-    throw new Error('No Order founded for getOrderById')
+  if (order) {
+    res.json(order);
+  } else {
+    res.status(404);
+    throw new Error('Order not found');
   }
 });
 
@@ -107,7 +107,7 @@ export const updateOrderToPaid = asyncHandler(async (req, res) => {
 
     const updatedOrder = await order.save()
 
-    res.status(200).json(updatedOrder)
+    res.json(updatedOrder);
   }else{
     res.status(404)
     throw new Error('Not found any order')
@@ -125,7 +125,7 @@ export const updateOrderToDelivered = asyncHandler(async (req, res) => {
     order.deliveredAt = Date.now()
 
     const updatedOrder = order.save()
-    res.status(200).json(updatedOrder)
+    res.json(updatedOrder);
   }else{
     res.status(404)
     throw new Error('No Order')
@@ -137,7 +137,7 @@ export const updateOrderToDelivered = asyncHandler(async (req, res) => {
 // @access  Private
 export const getOrders = asyncHandler(async (req, res) => {
   const orders = await Order.find({}).populate('user', 'id name')
-  res.status(200).json(orders)
+  res.json(orders);
 });
 
 // @desc    get order by user ID
@@ -148,7 +148,7 @@ export const getOrdersByUserId = asyncHandler(async (req, res) => {
   const userOrders = await Order.find({user : userId})
   
   if(userOrders) {
-    res.status(200).json(userOrders)
+    res.json(userOrders)
   }else{
     res.status(404)
     throw new Error('No Order founded for getOrderById')

@@ -18,6 +18,8 @@ router
   .get(getProductsController)
   .post(protect, admin, createProductController);
 
+router.route("/:id/reviews").post(protect, createReviewController);
+
 router.route("/top").get(getTopProductsController);
 
 router
@@ -25,7 +27,5 @@ router
   .get(getProductByIdController)
   .put(protect, admin, updateProductController)
   .delete(protect, admin, removeProductController);
-
-router.route("/:id/reviews").post(protect, createReviewController);
 
 export default router;

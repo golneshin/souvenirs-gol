@@ -14,7 +14,6 @@ const UsersListPage = () => {
     data: users,
     refetch,
     isLoading: loadingUsers,
-    error: errorUsers,
   } = useGetAllUsersQuery();
 
   const [removeUser, { isLoading: loadingRemoveUser }] =
@@ -25,8 +24,8 @@ const UsersListPage = () => {
       try {
         await createProduct();
         refetch();
-      } catch (error) {
-        toast.error(error?.data?.message || error.error);
+      } catch (err) {
+        toast.error(err?.data?.message || err.error);
       }
     }
   };
@@ -97,8 +96,7 @@ const UsersListPage = () => {
             </div>
             {loadingUsers ? (
               <div className="flex justify-center py-2">{SPINNERS.BIG}</div>
-            ) : errorUsers ? (
-              <Message>{error}</Message>
+            
             ) : (
               users.map((user) => (
                 <div

@@ -33,9 +33,12 @@ export const getProductByIdController = asyncHandler(async (req, res) => {
 
   if (product) {
     return res.json(product);
+  } else {
+    // NOTE: this will run if a valid ObjectId but no product was found
+    // i.e. product may be null
+    res.status(404);
+    throw new Error('Product not found');
   }
-  res.status(404);
-  throw new Error("Product not found!!");
 });
 
 // @desc    Create a product
@@ -77,7 +80,7 @@ export const updateProductController = asyncHandler(async (req, res) => {
 
     const updatedProduct = product.save();
 
-    res.status(201).json(updatedProduct);
+    res.json(updatedProduct);
   } else {
     res.status(404);
     throw new Error("Product not found");
@@ -93,7 +96,7 @@ export const removeProductController = asyncHandler(async (req, res) => {
   if (product) {
     await Product.deleteOne({ _id: product._id });
 
-    res.status(201).json({ message: "Product Removed" });
+    res.json({ message: 'Product removed' });
   } else {
     res.status(404);
     throw new Error("Product not found");
